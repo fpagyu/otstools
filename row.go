@@ -13,7 +13,7 @@ type (
 
 type IRow interface {
 	Len() int
-	Reset() // 将当前游标置为0
+	Reset() 
 	Next() (PrimaryKeyCols, AttributeCols, bool)
 }
 
