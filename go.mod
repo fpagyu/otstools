@@ -1,4 +1,4 @@
-module otstool
+module github.com/fpagyu/otstool
 
 go 1.16
 

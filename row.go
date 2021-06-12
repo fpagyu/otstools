@@ -1,4 +1,4 @@
-package ots
+package otstool
 
 import (
 	"errors"
