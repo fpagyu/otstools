@@ -5,19 +5,12 @@ import (
 	"reflect"
 )
 
-// ScanRow
-func ScanRow(rows IRow, obj interface{}) error {
-	if rows.Len() == 0 {
-		return nil
-	}
-
-	rows.Reset()
+func scan(rows IRow, elem reflect.Value) error {
 	pks, cols, ok := rows.Next()
 	if !ok {
 		return errors.New("empty rows")
 	}
 
-	elem := reflect.Indirect(reflect.ValueOf(obj))
 	decoder, err := NewDecoder(elem.Kind())
 	if err != nil {
 		return err
@@ -26,15 +19,16 @@ func ScanRow(rows IRow, obj interface{}) error {
 	return decoder.Decode(pks, cols, elem)
 }
 
-// ScanRows: v是一个Slice
-func ScanRows(rows IRow, objs interface{}) error {
+// ScanRows
+func Scan(rows IRow, objs interface{}) error {
+	rows.Reset()
 	if rows.Len() == 0 {
 		return nil
 	}
 
 	elems := reflect.Indirect(reflect.ValueOf(objs))
 	if kind := elems.Kind(); kind != reflect.Slice {
-		return errors.New("must be slice")
+		return scan(rows, elems)
 	}
 	elems.Set(reflect.MakeSlice(elems.Type(), 0, rows.Len()))
 
@@ -53,7 +47,6 @@ func ScanRows(rows IRow, objs interface{}) error {
 		return err
 	}
 
-	rows.Reset()
 	for i := 0; i < rows.Len(); i++ {
 		pks, cols, ok := rows.Next()
 		if !ok {
@@ -79,20 +72,6 @@ func ScanRows(rows IRow, objs interface{}) error {
 	}
 
 	return err
-}
-
-func Unmarshal(rows IRow, v interface{}) (err error) {
-	if rows.Len() == 0 {
-		return nil
-	}
-
-	vv := reflect.Indirect(reflect.ValueOf(v))
-	switch vv.Kind() {
-	case reflect.Slice:
-		return ScanRows(rows, v)
-	default:
-		return ScanRow(rows, v)
-	}
 }
 
 type Decoder interface {

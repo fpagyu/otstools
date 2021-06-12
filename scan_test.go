@@ -31,7 +31,7 @@ func TestScanRow(t *testing.T) {
 			}, {
 				PrimaryKeys: nil,
 				Columns: []*tablestore.AttributeColumn{
-					{ColumnName: "name", Value: "zhouhan"},
+					{ColumnName: "name", Value: "zhouh"},
 					{ColumnName: "age", Value: 23},
 					{ColumnName: "no", Value: "2"},
 				},
@@ -39,14 +39,21 @@ func TestScanRow(t *testing.T) {
 		},
 	}
 
-	var obj []Student
-	err := ScanRows(&rows, &obj)
+	var obj Student
+	err := Scan(&rows, &obj)
 	if err != nil {
 		t.Error(err)
 	}
 
-	// t.Log(obj.People, obj.No)
-	// for i := range obj {
-	// 	t.Log(obj[i].People, obj[i].No)
-	// }
+	t.Log("Scan to Struct: ", obj.People, obj.No)
+
+	var objs []Student
+	err = Scan(&rows, &objs)
+	if err != nil {
+		t.Error(err)
+	}
+
+	for i := range objs {
+		t.Logf("Scan to Slice[%d]: %v, %v", i, objs[i].People, objs[i].No)
+	}
 }

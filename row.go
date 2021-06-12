@@ -13,7 +13,7 @@ type (
 
 type IRow interface {
 	Len() int
-	Reset() 
+	Reset()
 	Next() (PrimaryKeyCols, AttributeCols, bool)
 }
 
@@ -46,7 +46,7 @@ func UnmarshalResp(resp interface{}, v interface{}) error {
 		return err
 	}
 
-	return Unmarshal(rows, v)
+	return Scan(rows, v)
 }
 
 type Row struct {
