@@ -56,4 +56,20 @@ func TestScanRow(t *testing.T) {
 	for i := range objs {
 		t.Logf("Scan to Slice[%d]: %v, %v", i, objs[i].People, objs[i].No)
 	}
+
+	var dic map[string]interface{}
+	err = Scan(&rows, &dic)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log("Scan to map: ", dic)
+
+	var dics []map[string]interface{}
+	err = Scan(&rows, &dics)
+	if err != nil {
+		t.Error(err)
+	}
+	for i := range dics {
+		t.Logf("Scan to MapSlice[%d]: %v", i, dics[i])
+	}
 }

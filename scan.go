@@ -11,6 +11,10 @@ func scan(rows IRow, elem reflect.Value) error {
 		return errors.New("empty rows")
 	}
 
+	if elem.Kind() == reflect.Map && elem.IsNil() {
+		elem.Set(reflect.MakeMap(elem.Type()))
+	}
+
 	decoder, err := NewDecoder(elem.Kind())
 	if err != nil {
 		return err
